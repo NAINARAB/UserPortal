@@ -6,10 +6,10 @@ const CompanyControl = () => {
 
     const addCompany = async (req, res) => {
 
-        const { Company_Name, DB_Name, Local_Comp_Id } = req.body;
+        const { Company_Name, DB_Name, Local_Comp_Id, Web_Api } = req.body;
 
-        if (!Company_Name || !DB_Name || !isNumber(Local_Comp_Id)) {
-            return invalidInput(res, 'Company_Name, DB_Name and Local_Comp_Id are required');
+        if (!Company_Name || !DB_Name || !isNumber(Local_Comp_Id) || !Web_Api) {
+            return invalidInput(res, 'Company_Name, DB_Name, Web_Api and Local_Comp_Id are required');
         }
 
         const transaction = new sql.Transaction();
@@ -33,11 +33,12 @@ const CompanyControl = () => {
                 .input('Company_Name', Company_Name)
                 .input('Local_Comp_Id', Local_Comp_Id)
                 .input('DB_Name', DB_Name)
+                .input('Web_Api', Web_Api)
                 .query(`
                     INSERT INTO [User_Portal].[dbo].[tbl_Company] (
-                        Company_Name, DB_Name, Local_Comp_Id
+                        Company_Name, DB_Name, Local_Comp_Id, Web_Api
                     ) VALUES (
-                        @Company_Name, @DB_Name, @Local_Comp_Id
+                        @Company_Name, @DB_Name, @Local_Comp_Id, @Web_Api
                     )`
                 );
 
@@ -55,10 +56,10 @@ const CompanyControl = () => {
     }
 
     const updateCompany = async (req, res) => {
-        const { Global_Comp_Id, Local_Comp_Id, Company_Name, DB_Name } = req.body;
+        const { Global_Comp_Id, Local_Comp_Id, Company_Name, DB_Name, Web_Api } = req.body;
 
-        if (!isNumber(Global_Comp_Id) || !Company_Name || !DB_Name || !isNumber(Local_Comp_Id)) {
-            return invalidInput(res, 'Global_Comp_Id, Company_Name, DB_Name and Local_Comp_Id are required');
+        if (!isNumber(Global_Comp_Id) || !Company_Name || !DB_Name || !isNumber(Local_Comp_Id) || !Web_Api) {
+            return invalidInput(res, 'Global_Comp_Id, Company_Name, DB_Name, Web_Api and Local_Comp_Id are required');
         }
 
         try {
@@ -88,12 +89,14 @@ const CompanyControl = () => {
                 .input('DB_Name', DB_Name)
                 .input('Global_Comp_Id', Global_Comp_Id)
                 .input('Local_Comp_Id', Local_Comp_Id)
+                .input('Web_Api', Web_Api)
                 .query(`
                     UPDATE [User_Portal].[dbo].[tbl_Company]
                     SET 
                         Company_Name = @Company_Name,
                         DB_Name = @DB_Name,
-                        Local_Comp_Id = @Local_Comp_Id
+                        Local_Comp_Id = @Local_Comp_Id,
+                        Web_Api = @Web_Api
                     WHERE
                         Global_Comp_Id = @Global_Comp_Id;`
                 )
